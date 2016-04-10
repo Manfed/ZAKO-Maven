@@ -1,7 +1,6 @@
 package eti.zako.jetty.server;
 
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
@@ -14,8 +13,8 @@ public class JettyServer {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         
-        DefaultServlet defaultServlet = new DefaultServlet();
-        ServletHolder holder = new ServletHolder("default", defaultServlet);
+        AirportServlet servlet = new AirportServlet();
+        ServletHolder holder = new ServletHolder("default", servlet);
         holder.setInitParameter("resourceBase", "./src/main/webapp/");
         
         context.addServlet(holder, "/*");
