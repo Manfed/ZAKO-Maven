@@ -1,8 +1,12 @@
 package eti.zako.jetty.server;
 
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+
+import eti.zako.jetty.servlets.AirportHttpServlet;
+import eti.zako.jetty.servlets.AirportWebSocketServlet;
 
 public class JettyServer {
 
@@ -10,14 +14,21 @@ public class JettyServer {
         
         Server server = new Server(10000);
         
+        //konfiguracja servletu odpowiadajacego za wyswietlenie strony
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         
-        AirportServlet servlet = new AirportServlet();
-        ServletHolder holder = new ServletHolder("default", servlet);
+        AirportHttpServlet servlet = new AirportHttpServlet();
+        ServletHolder holder = new ServletHolder("airport", servlet);
         holder.setInitParameter("resourceBase", "./src/main/webapp/");
         
         context.addServlet(holder, "/*");
+        
+        //dodanie socketa
+        
+        AirportWebSocketServlet wsServlet = new AirportWebSocketServlet();
+        ServletHolder wsHolder = new ServletHolder("socket", wsServlet);
+        context.addServlet(wsHolder, "/socket");
         
         server.setHandler(context);
         
