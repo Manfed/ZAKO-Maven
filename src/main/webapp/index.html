@@ -3,14 +3,28 @@
     <head>
         <title>Airport</title>
         <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <script type="text/javascript" src="js/loadMap.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
             async defer></script>
-        <script type="text/javascript" src="js/serverConnection.js"></script>
+        <script type="text/javascript" src="js/loadMap.js"></script>
+        
     </head>
     
     <body>
-        <div id="map" onLoad="initMap()"></div>
+        <div id="map"></div>
+        <div id="airportForm">
+        </div>
+        <script type="text/javascript">
+            function downloadJSAtOnload() {
+                var element = document.createElement("script");
+                element.src = "js/serverConnection.js";
+                document.body.appendChild(element);
+            }
+            if (window.addEventListener)
+                window.addEventListener("load", downloadJSAtOnload, false);
+            else if (window.attachEvent)
+                window.attachEvent("onload", downloadJSAtOnload);
+            else window.onload = downloadJSAtOnload;
+        </script>
     </body>
     
 </html>

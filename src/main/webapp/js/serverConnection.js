@@ -1,10 +1,10 @@
-// establish the communication channel over a websocket
-/*eslint-env browser */
-var ws = new WebSocket("ws://192.168.99.101:32842/socket");
+var ws = new WebSocket("ws://192.168.99.101:32775/socket");
  
 // called when socket connection established
 ws.onopen = function() {
     appendLog("Connected to stock service! Press 'Start' to get stock info.");
+    var location2 = {lat: 44.37884, lng: 8.46807};
+    addMarker(location2);
 };
  
 // called when a message received from server
@@ -24,8 +24,7 @@ ws.onerror = function(err) {
  
 // appends logText to log text area
 function appendLog(logText) {
-    var log = document.getElementById("log");
-    log.value = log.value + logText + "\n";
+    console.log(logText);
 }
  
 // sends msg to the server over websocket
