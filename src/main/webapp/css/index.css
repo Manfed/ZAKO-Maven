@@ -193,6 +193,11 @@ form li:after
 	margin-top:10px;
 }
 
+.buttons  .error
+{
+	color: "red";
+}
+
 * html form li
 {
 	height:1%;

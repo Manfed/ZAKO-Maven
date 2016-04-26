@@ -3,18 +3,20 @@
     <head>
         <title>Airport</title>
         <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <script src="https://maps.googleapis.com/maps/api/js?callback=initMap"
-            async defer></script>
+		
+		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+		<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+        
         <script type="text/javascript" src="js/loadMap.js"></script>
 		<script type="text/javascript" src="js/view.js"></script>
 		<script type="text/javascript" src="js/calendar.js"></script>
         
     </head>
     
-    <body>
+    <body onload="initMap()">
         <div id="map"></div>
         <div id="airportForm">
-			<form id="flight_form" class="appnitro"  method="post" action="">
+			<form id="flight_form" class="appnitro"  method="post" onsubmit="return submitForm()">
 				<div class="form_description">
 					<h2>Find flight</h2>
 					<p></p>
@@ -76,6 +78,7 @@
 						<li class="buttons">
 							<input type="hidden" name="form_id" value="1123961" />
 							<input id="saveForm" class="button_text" type="submit" name="submit" value="Find" />
+							<label class="error" id="sending_error_label"></label>
 						</li>
 					</ul>
 			</form>
