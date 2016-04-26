@@ -1,5 +1,6 @@
 var map;
 var date = new Date;
+var autocomplete = [];
 
 function initMap() {
     map = L.map('map').setView([54.37884, 18.46807], 4);
@@ -27,6 +28,12 @@ function addMarker(location, content) {
 					"<button class=\"fromButton\" onclick=\"fromButtonClick('" + content + "')\">From</button>" +
 					"<button class=\"toButton\" onclick=\"toButtonClick('" + content + "')\">To</button>"
     ).addTo(map);
+}
+
+function setAutocomplete(namesArray) {
+    for(int i = 0; i < namesArray.length; i++) {
+        autocomplete.push(namesArray.airportName);
+    }
 }
 
 function fromButtonClick(markerTitle) {

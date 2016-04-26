@@ -1,4 +1,4 @@
-var ws = new WebSocket("ws://192.168.99.101:32775/socket");
+var ws = new WebSocket("ws://192.168.99.101:32820/socket");
  
 // called when socket connection established
 ws.onopen = function() {
@@ -10,6 +10,10 @@ ws.onopen = function() {
 // called when a message received from server
 ws.onmessage = function (evt) {
     appendLog(evt.data);
+    var parsedJSON = JSON.parse(evt.data);
+    if(typeof parsedJSON.autocomplete !== "undefined") {
+        setAutocomplete(parsedJSON.autocomplete);
+    }
 };
  
 // called when socket connection closed
@@ -33,15 +37,11 @@ function sendToServer(msg) {
 }// establish the communication channel over a websocket
 
 function submitForm() {
-	if(ws.isOpen()) {
-		var jsonToSend = "{\"form\": { \"from\": \"" + document.getElementById('from_textbox').value + "\", " +
+	var jsonToSend = "{\"form\": { \"from\": \"" + document.getElementById('from_textbox').value + "\", " +
 			"\"to\": " + document.getElementById('to_textbox').value + "\n, " +
 			"\"date\": \"" + document.getElementById('date_label_1').value + "/" + document.getElementById('date_label_2').value + "/" +
 				document.getElementById('calendar_year').value + "\", " +
 			"\"time\": \"" + document.getElementById('time_hours').value + ":" + document.getElementById('time_mins').value + "\"" +
-		"}}";
-		sendToServer(jsonToSend);
-	} else {
-		document.getElementById('sending_error_label').value = "conncetions with server is closed";
-	}
+		    "}}";
+	sendToServer(jsonToSend);
 }
