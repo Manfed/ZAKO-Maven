@@ -37,11 +37,15 @@ function sendToServer(msg) {
 }// establish the communication channel over a websocket
 
 function submitForm() {
-	var jsonToSend = "{\"form\": { \"from\": \"" + document.getElementById('from_textbox').value + "\", " +
-			"\"to\": " + document.getElementById('to_textbox').value + "\n, " +
-			"\"date\": \"" + document.getElementById('date_label_1').value + "/" + document.getElementById('date_label_2').value + "/" +
-				document.getElementById('calendar_year').value + "\", " +
-			"\"time\": \"" + document.getElementById('time_hours').value + ":" + document.getElementById('time_mins').value + "\"" +
-		    "}}";
-	sendToServer(jsonToSend);
+	if(document.getElementById('from_textbox').value != document.getElementById('to_textbox').value) {
+		var jsonToSend = "{\"form\": { \"from\": \"" + document.getElementById('from_textbox').value + "\", " +
+				"\"to\": " + document.getElementById('to_textbox').value + "\n, " +
+				"\"date\": \"" + document.getElementById('date_label_1').value + "/" + document.getElementById('date_label_2').value + "/" +
+					document.getElementById('calendar_year').value + "\", " +
+				"\"time\": \"" + document.getElementById('time_hours').value + ":" + document.getElementById('time_mins').value + "\"" +
+				"}}";
+		sendToServer(jsonToSend);
+		return true;
+	}
+	return false;
 }

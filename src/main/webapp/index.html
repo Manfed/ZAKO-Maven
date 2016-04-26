@@ -3,6 +3,7 @@
     <head>
         <title>Airport</title>
         <link rel="stylesheet" type="text/css" href="css/index.css" />
+		<link rel="stylesheet" type="text/css" href="css/auto-complete.css" />
 		
 		<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
 		<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
@@ -89,12 +90,66 @@
                 element.src = "js/serverConnection.js";
                 document.body.appendChild(element);
             }
+			function stopRKey(evt) {
+				var evt = (evt) ? evt : ((event) ? event : null);
+				var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null);
+				if((evt.keyCode == 13) && (node.type=="text")) {return false;}
+			}
+			
             if (window.addEventListener)
                 window.addEventListener("load", downloadJSAtOnload, false);
             else if (window.attachEvent)
                 window.attachEvent("onload", downloadJSAtOnload);
             else window.onload = downloadJSAtOnload;
+			document.onkeypress = stopRKey;
         </script>
+		<script src="js/auto-complete.min.js"></script>
+		<script type="text/javascript">
+			function autocompletion_suggest(term, suggest) {
+				term = term.toLowerCase();
+				var suggestions = [];
+				var from_textbox_value = document.getElementById('from_textbox').value;
+				var to_textbox_value = document.getElementById('to_textbox').value;
+				for(var i = 0; i < autocomplete.length; i++) {
+					if(~autocomplete[i].toLowerCase().indexOf(term) && from_textbox_value != to_textbox_value) {
+						suggestions.push(autocomplete[i]);
+						suggest(suggestions);
+					}
+				}
+			}
+			var from_textbox_autocomplete = new autoComplete({
+				selector: '#from_textbox',
+				minChars: 1,
+				source: function(term, suggest) {
+					term = term.toLowerCase();
+					var suggestions = [];
+					var to_textbox_value = document.getElementById('to_textbox').value;
+					for(var i = 0; i < autocomplete.length; i++) {
+						if(~autocomplete[i].toLowerCase().indexOf(term) && 
+							autocomplete[i] != to_textbox_value) {
+							suggestions.push(autocomplete[i]);
+							suggest(suggestions);
+						}
+					}
+				}
+			});
+			var to_textbox_autocomplete = new autoComplete({
+				selector: '#to_textbox',
+				minChars: 1,
+				source: function(term, suggest) {
+					term = term.toLowerCase();
+					var suggestions = [];
+					var from_textbox_value = document.getElementById('from_textbox').value;
+					for(var i = 0; i < autocomplete.length; i++) {
+						if(~autocomplete[i].toLowerCase().indexOf(term) && 
+							autocomplete[i] != from_textbox_value) {
+							suggestions.push(autocomplete[i]);
+							suggest(suggestions);
+						}
+					}
+				}
+			});
+		</script>
     </body>
     
 </html>

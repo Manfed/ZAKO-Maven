@@ -1,6 +1,6 @@
 var map;
 var date = new Date;
-var autocomplete = [];
+var autocomplete = ["test", "test2"];
 
 function initMap() {
     map = L.map('map').setView([54.37884, 18.46807], 4);
@@ -31,7 +31,7 @@ function addMarker(location, content) {
 }
 
 function setAutocomplete(namesArray) {
-    for(int i = 0; i < namesArray.length; i++) {
+    for(var i = 0; i < namesArray.length; i++) {
         autocomplete.push(namesArray.airportName);
     }
 }
