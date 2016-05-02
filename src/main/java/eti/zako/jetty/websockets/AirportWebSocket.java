@@ -1,7 +1,6 @@
 package eti.zako.jetty.websockets;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jetty.websocket.api.Session;
@@ -74,7 +73,6 @@ public class AirportWebSocket {
     private FormData extractFormData(String message) {
         Gson gson = new Gson();
         FormData formData = gson.fromJson(message, FormData.class);
-        System.out.println(formData);
         return formData;
     }
     

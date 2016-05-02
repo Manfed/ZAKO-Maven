@@ -1,4 +1,4 @@
-var ws = new WebSocket("ws://192.168.99.101:32820/socket");
+var ws = new WebSocket("ws://192.168.99.101:32850/socket");
  
 // called when socket connection established
 ws.onopen = function() {
@@ -37,12 +37,14 @@ function sendToServer(msg) {
 }// establish the communication channel over a websocket
 
 function submitForm() {
-	if(document.getElementById('from_textbox').value != document.getElementById('to_textbox').value) {
+	if(document.getElementById('from_textbox').value.toLowerCase() != document.getElementById('to_textbox').value.toLowerCase()) {
 		var jsonToSend = "{\"form\": { \"from\": \"" + document.getElementById('from_textbox').value + "\", " +
-				"\"to\": " + document.getElementById('to_textbox').value + "\n, " +
-				"\"date\": \"" + document.getElementById('date_label_1').value + "/" + document.getElementById('date_label_2').value + "/" +
+				"\"to\": \"" + document.getElementById('to_textbox').value + "\"\n, " +
+				"\"date\": \"" + document.getElementById('date_label_1').value + "/" + 
+				    document.getElementById('date_label_2').value + "/" +
 					document.getElementById('calendar_year').value + "\", " +
-				"\"time\": \"" + document.getElementById('time_hours').value + ":" + document.getElementById('time_mins').value + "\"" +
+				"\"time\": \"" + document.getElementById('time_hours').value + 
+				    ":" + document.getElementById('time_mins').value + "\"" +
 				"}}";
 		sendToServer(jsonToSend);
 		return true;

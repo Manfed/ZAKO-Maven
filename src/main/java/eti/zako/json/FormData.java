@@ -1,10 +1,19 @@
 package eti.zako.json;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class FormData {
     
     private Form form;
     
-    class Form {
+    public Form getForm() {
+        return this.form;
+    }
+    
+    public class Form {
         private String from;
         private String to;
         private String date;
@@ -18,17 +27,17 @@ public class FormData {
             return this.to;
         }
         
-        public String getDate() {
-            return this.date;
+        public Date getDate() {
+            DateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+            Date formDate = null;
+            try {
+                formDate = format.parse(this.date + " " + this.time);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            return formDate;
         }
-        
-        public String getTime() {
-            return this.time;
-        }
-    }
-    
-    public Form getForm() {
-        return this.form;
     }
 }
 
