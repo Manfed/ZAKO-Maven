@@ -32,7 +32,7 @@ function addMarker(location, content) {
 
 function setAutocomplete(namesArray) {
     for(var i = 0; i < namesArray.length; i++) {
-        autocomplete.push(namesArray.airportName);
+        autocomplete.push(namesArray[i]);
     }
 }
 

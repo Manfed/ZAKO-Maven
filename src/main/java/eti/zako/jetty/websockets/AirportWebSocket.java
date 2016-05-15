@@ -1,6 +1,7 @@
 package eti.zako.jetty.websockets;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.eclipse.jetty.websocket.api.Session;
@@ -9,10 +10,14 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.hibernate.controller.HibernateController;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import eti.zako.json.FormData;
+import eti.zako.json.JSONBuilder;
+import eti.zako.sqlite.model.Airport;
 
 @WebSocket
 public class AirportWebSocket {
@@ -23,7 +28,9 @@ public class AirportWebSocket {
     public void handleConnect(Session session) {
         this.session = session;
         //TODO Odeslanie danych do autouzupełniania formularza. Format: {"autocomplete": ["airportName": <nazwa>, ...]}
-        System.out.println("Test");
+        List<Object> airports = HibernateController.getData("airport", "");
+        String autocompleteJson = JSONBuilder.prepareAutocompleteJSON(airports);
+        
     }
     
     @OnWebSocketClose
@@ -40,7 +47,6 @@ public class AirportWebSocket {
         if(formPattern.matcher(message).find()) {
             FormData form = extractFormData(message);
             //TODO Obsluga formularza i odeslanie danych
-            send("Test senda");
         }
     }
  
@@ -75,5 +81,4 @@ public class AirportWebSocket {
         FormData formData = gson.fromJson(message, FormData.class);
         return formData;
     }
-    
 }
