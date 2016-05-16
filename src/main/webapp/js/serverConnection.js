@@ -1,10 +1,8 @@
-var ws = new WebSocket("ws://192.168.99.101:32850/socket");
+var ws = new WebSocket("ws://192.168.99.101:32768/socket");
  
 // called when socket connection established
 ws.onopen = function() {
-    appendLog("Connected to stock service! Press 'Start' to get stock info.");
-    var location2 = [44.37884, 8.46807];
-    addMarker(location2, "Test2");
+    appendLog("Połączono - gratulacje");
 };
  
 // called when a message received from server
@@ -13,6 +11,8 @@ ws.onmessage = function (evt) {
     var parsedJSON = JSON.parse(evt.data);
     if(typeof parsedJSON.autocomplete !== "undefined") {
         setAutocomplete(parsedJSON.autocomplete);
+    } else if(typeof parsedJSON.markers !== "undefined") {
+        setMarkers(parsedJSON.markers);
     }
 };
  

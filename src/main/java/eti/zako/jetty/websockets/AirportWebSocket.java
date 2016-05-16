@@ -13,11 +13,9 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.hibernate.controller.HibernateController;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import eti.zako.json.FormData;
 import eti.zako.json.JSONBuilder;
-import eti.zako.sqlite.model.Airport;
 
 @WebSocket
 public class AirportWebSocket {
@@ -28,9 +26,11 @@ public class AirportWebSocket {
     public void handleConnect(Session session) {
         this.session = session;
         //TODO Odeslanie danych do autouzupełniania formularza. Format: {"autocomplete": ["airportName": <nazwa>, ...]}
-        List<Object> airports = HibernateController.getData("airport", "");
+        List<Object> airports = HibernateController.getData("Airport", "");
         String autocompleteJson = JSONBuilder.prepareAutocompleteJSON(airports);
-        
+        String markersJson = JSONBuilder.prepareMarkersJSON(airports);
+        send(autocompleteJson);
+        send(markersJson);
     }
     
     @OnWebSocketClose

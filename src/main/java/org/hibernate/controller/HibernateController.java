@@ -54,12 +54,12 @@ public class HibernateController {
     		tx = session.beginTransaction();
     		
     		//Lotniska
-    		Airport gdansk = new Airport(1, "Gdañsk", "EPGD", "GDN", "54.3762", "18.4718");
+    		Airport gdansk = new Airport(1, "Gdansk", "EPGD", "GDN", "54.3762", "18.4718");
     		Airport wawa = new Airport(2, "Warszawa", "EPWA", "WAW", "52.16656", "20.98735");
     		Airport londyn = new Airport(3, "Londyn Heathrow", "EGLL", "LHR", "51.4706", "-0.461941");
     		Airport ny = new Airport(4, "Nowy Jork", "KJFK", "JFK", "40.6444", "-73.7827");
     		Airport sydney = new Airport(5, "Sydney", "YSSY", "SYD", "-33.9357", "151.166");
-    		Airport pekin = new Airport(6, "Pekin", "ZBAA", "PEK", "40.0754", "166.592");
+    		Airport pekin = new Airport(6, "Pekin", "ZBAA", "PEK", "40.0754", "116.592");
     		
     		//Loty
     		Flights gdToWawa1 = new Flights(1, "Gd->Wawa", 1, 2, new Date(2016, 6, 1, 10, 20), 50, 50, 300);
@@ -97,7 +97,7 @@ public class HibernateController {
     		Gate gateF15 = new Gate(15, "Syd->Pek", 6, new Date(2016, 6, 1, 22, 0), new Date(2016, 6, 1, 22, 50), 1);
     		Gate gateF16 = new Gate(16, "Lond->Wawa", 2, new Date(2016, 6, 1, 19, 0), new Date(2016, 6, 1, 19, 50), 1);
     		
-    		//kontrola baga¿u
+    		//kontrola bagaï¿½u
     		CKIN ckinF1 = new CKIN(1, "Gd->Wawa", 2, new Date(2016, 6, 1, 9, 0), new Date(2016, 6, 1, 10, 0), 20, 1);
     		CKIN ckinF2 = new CKIN(2, "Gd->Wawa", 2, new Date(2016, 6, 1, 14, 35), new Date(2016, 6, 1, 15, 10), 20, 1);
     		CKIN ckinF3 = new CKIN(3, "Gd->Lond", 3, new Date(2016, 6, 1, 7, 55), new Date(2016, 6, 1, 8, 40), 20, 1);

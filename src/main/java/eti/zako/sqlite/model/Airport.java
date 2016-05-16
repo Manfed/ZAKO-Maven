@@ -1,6 +1,5 @@
 package eti.zako.sqlite.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -13,9 +12,7 @@ public class Airport {
     private String city;
     private String icaoID;
     private String iataID;
-    @Column(name="lat")
     private String LAT;
-    @Column(name="lon")
     private String LON;
 
     public Airport() {

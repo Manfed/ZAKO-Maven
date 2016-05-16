@@ -1,9 +1,9 @@
 var map;
 var date = new Date;
-var autocomplete = ["test", "test2"];
+var autocomplete = [];
 
 function initMap() {
-    map = L.map('map').setView([54.37884, 18.46807], 4);
+    map = L.map('map').setView([33, 44], 2);
 	
 	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -11,15 +11,12 @@ function initMap() {
 		id: 'mapbox.streets',
 		accessToken: 'pk.eyJ1IjoibWFuaW96YWtvIiwiYSI6ImNpbmV4ZzFhdjAwN3l3emx5bjYyZWdranIifQ.TK1h3WP9gl91Tpirc9zIZg'
 	}).addTo(map);
-	
-    var location = [54.37884, 18.46807];
-    addMarker(location, "Test");
-	addMarker([0, 0], "Test2");
+
 	document.getElementById('date_label_1').value = date.getMonth() + 1;
 	document.getElementById('date_label_2').value = date.getDate();
 	document.getElementById('calendar_year').value = date.getFullYear();
-	document.getElementById('time_hours').value = date.getHours() > 10 ? date.getHours() : '0' + date.getHours();
-	document.getElementById('time_mins').value = date.getMinutes() > 10 ? date.getMinutes() : '0' + date.getMinutes();
+	document.getElementById('time_hours').value = date.getHours() >= 10 ? date.getHours() : '0' + date.getHours();
+	document.getElementById('time_mins').value = date.getMinutes() >= 10 ? date.getMinutes() : '0' + date.getMinutes();
 }
 
 function addMarker(location, content) {
@@ -33,6 +30,13 @@ function addMarker(location, content) {
 function setAutocomplete(namesArray) {
     for(var i = 0; i < namesArray.length; i++) {
         autocomplete.push(namesArray[i]);
+    }
+}
+
+function setMarkers(positions) {
+    for(var i=0; i < positions.length; i++) {
+        var location = [parseFloat(positions[i].lat), parseFloat(positions[i].lon)];
+        addMarker(location, positions[i].city);
     }
 }
 
