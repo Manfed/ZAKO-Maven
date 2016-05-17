@@ -16,6 +16,9 @@ public class Gate {
     private Date timeStart;
     private Date timeStop;
     private Integer delayCode;
+    
+    public Gate() {
+    }
 
     public Gate(Integer ID, String flightNumber, Integer destination, Date timeStart, Date timeStop, Integer delayCode) {
         this.ID = ID;

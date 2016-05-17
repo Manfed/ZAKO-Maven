@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 
 import eti.zako.json.FormData;
 import eti.zako.json.JSONBuilder;
+import eti.zako.sqlite.model.Airport;
 
 @WebSocket
 public class AirportWebSocket {
@@ -25,8 +26,7 @@ public class AirportWebSocket {
     @OnWebSocketConnect
     public void handleConnect(Session session) {
         this.session = session;
-        //TODO Odeslanie danych do autouzupełniania formularza. Format: {"autocomplete": ["airportName": <nazwa>, ...]}
-        List<Object> airports = HibernateController.getData("Airport", "");
+        List<Airport> airports = HibernateController.<Airport>getDataList("Airport", "");
         String autocompleteJson = JSONBuilder.prepareAutocompleteJSON(airports);
         String markersJson = JSONBuilder.prepareMarkersJSON(airports);
         send(autocompleteJson);
@@ -46,7 +46,8 @@ public class AirportWebSocket {
         Pattern formPattern = Pattern.compile("\\{\"form\": \\{.*");
         if(formPattern.matcher(message).find()) {
             FormData form = extractFormData(message);
-            //TODO Obsluga formularza i odeslanie danych
+            String pathJson = form.parseForm();
+            send(pathJson);
         }
     }
  

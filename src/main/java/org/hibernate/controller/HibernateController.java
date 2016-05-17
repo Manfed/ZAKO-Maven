@@ -6,19 +6,35 @@ import java.util.List;
 import java.util.Properties;
 
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import org.hibernate.transform.Transformers;
+import org.hibernate.type.IntegerType;
+import org.hibernate.type.StringType;
 
 import eti.zako.sqlite.model.Airport;
 import eti.zako.sqlite.model.CKIN;
+import eti.zako.sqlite.model.FlightPath;
 import eti.zako.sqlite.model.Flights;
 import eti.zako.sqlite.model.Gate;
 
 public class HibernateController {
+    
+    public static final String FIND_PATH_QUERY = "WITH RECURSIVE transitive_closure(airportID, destination, pathString) AS " +
+                                                    "(SELECT airportID, destination, airportID || '.' || destination || '.' AS pathString " +
+                                                    "FROM Flights WHERE airportID = :from " + 
+                                                    "UNION ALL " + 
+                                                    "SELECT tc.airportID, f.destination, tc.pathString || f.destination || '.' AS pathString "+
+                                                    "FROM Flights AS f " + 
+                                                    "JOIN transitive_closure AS tc ON f.airportID = tc.destination " +
+                                                    "WHERE tc.pathString NOT LIKE '%' || f.destination || '.%' ) " +
+                                                    "SELECT DISTINCT * FROM transitive_closure WHERE destination = :to " +
+                                                    "ORDER BY airportID, destination";
 
 	private static SessionFactory sessionFactory = null;
 	private static ServiceRegistry serviceRegistry = null;
@@ -62,22 +78,22 @@ public class HibernateController {
     		Airport pekin = new Airport(6, "Pekin", "ZBAA", "PEK", "40.0754", "116.592");
     		
     		//Loty
-    		Flights gdToWawa1 = new Flights(1, "Gd->Wawa", 1, 2, new Date(2016, 6, 1, 10, 20), 50, 50, 300);
-    		Flights gdToWawa2 = new Flights(2, "Gd->Wawa", 1, 2, new Date(2016, 6, 1, 15, 30), 50, 50, 300);
-    		Flights gdToLond1 = new Flights(3, "Gd->Lond", 1, 3, new Date(2016, 6, 1, 8, 50), 120, 200, 1306);
-    		Flights gdToLond2 = new Flights(4, "Gd->Lond", 1, 3, new Date(2016, 6, 1, 16, 20), 120, 200, 1306);
-    		Flights wawaToPek1 = new Flights(5, "Wawa->Pek", 2, 6, new Date(2016, 6, 1, 4, 20), 100, 800, 7000);
-    		Flights wawaToPek2 = new Flights(6, "Wawa->Pek", 2, 6, new Date(2016, 6, 1, 20, 40), 100, 800, 7000);
-    		Flights pekToSyd = new Flights(7, "Pek->Sydn", 6, 5, new Date(2016, 6, 1, 11, 06), 150, 750, 8926);
-    		Flights sydToNY = new Flights(8, "Syd->NY", 5, 4, new Date(2016, 6, 1, 14, 15), 150, 1200, 15960);
-    		Flights pekToNY = new Flights(9, "Pek->NY", 6, 4, new Date(2016, 6, 1, 4, 6), 150, 1000, 10962);
-    		Flights londToNY1 = new Flights(10, "Lond->NY", 3, 4, new Date(2016, 6, 1, 5, 0), 150, 600, 5535);
-    		Flights londToNY2 = new Flights(11, "Lond->NY", 3, 4, new Date(2016, 6, 1, 20, 55), 150, 600, 5535);
-    		Flights NYToLond = new Flights(12, "NY->Lond", 4, 3, new Date(2016, 6, 1, 7, 0), 150, 600, 5535);
-    		Flights NYToPek = new Flights(13, "NY->Pek", 4, 6, new Date(2016, 6, 1, 8, 0), 150, 1000, 10962);
-    		Flights pekToWawa = new Flights(14, "Pek->Wawa", 6, 2, new Date(2016, 6, 1, 2, 0), 150, 800, 7000);
-    		Flights sydToPek = new Flights(15, "Syd->Pek", 5, 6, new Date(2016, 6, 1, 23, 0), 150, 750, 8926);
-    		Flights londToWawa = new Flights(16, "Lond->Wawa", 3, 2, new Date(2016, 6, 1, 20, 0), 150, 200, 1500);
+    		Flights gdToWawa1 = new Flights(1, "Gd->Wawa", 1, 2, new Date(2016, 6, 1, 10, 20), 50, 50, 300, 1.0);
+    		Flights gdToWawa2 = new Flights(2, "Gd->Wawa", 1, 2, new Date(2016, 6, 1, 15, 30), 50, 50, 300, 1.0);
+    		Flights gdToLond1 = new Flights(3, "Gd->Lond", 1, 3, new Date(2016, 6, 1, 8, 50), 120, 200, 1306, 2.3);
+    		Flights gdToLond2 = new Flights(4, "Gd->Lond", 1, 3, new Date(2016, 6, 1, 16, 20), 120, 200, 1306, 2.3);
+    		Flights wawaToPek1 = new Flights(5, "Wawa->Pek", 2, 6, new Date(2016, 6, 1, 4, 20), 100, 800, 7000, 8.0);
+    		Flights wawaToPek2 = new Flights(6, "Wawa->Pek", 2, 6, new Date(2016, 6, 1, 20, 40), 100, 800, 7000, 8.0);
+    		Flights pekToSyd = new Flights(7, "Pek->Sydn", 6, 5, new Date(2016, 6, 1, 11, 06), 150, 750, 8926, 12.0);
+    		Flights sydToNY = new Flights(8, "Syd->NY", 5, 4, new Date(2016, 6, 1, 14, 15), 150, 1200, 15960, 20.2);
+    		Flights pekToNY = new Flights(9, "Pek->NY", 6, 4, new Date(2016, 6, 1, 4, 6), 150, 1000, 10962, 13.33);
+    		Flights londToNY1 = new Flights(10, "Lond->NY", 3, 4, new Date(2016, 6, 1, 5, 0), 150, 600, 5535, 7.8);
+    		Flights londToNY2 = new Flights(11, "Lond->NY", 3, 4, new Date(2016, 6, 1, 20, 55), 150, 600, 5535, 7.9);
+    		Flights NYToLond = new Flights(12, "NY->Lond", 4, 3, new Date(2016, 6, 1, 7, 0), 150, 600, 5535, 8.0);
+    		Flights NYToPek = new Flights(13, "NY->Pek", 4, 6, new Date(2016, 6, 1, 8, 0), 150, 1000, 10962, 13.5);
+    		Flights pekToWawa = new Flights(14, "Pek->Wawa", 6, 2, new Date(2016, 6, 1, 2, 0), 150, 800, 7000, 8.0);
+    		Flights sydToPek = new Flights(15, "Syd->Pek", 5, 6, new Date(2016, 6, 1, 23, 0), 150, 750, 8926, 12.0);
+    		Flights londToWawa = new Flights(16, "Lond->Wawa", 3, 2, new Date(2016, 6, 1, 20, 0), 150, 200, 1500, 2.75);
     		
     		//bramki
     		Gate gateF1 = new Gate(1, "Gd->Wawa", 2, new Date(2016, 6, 1, 9, 0), new Date(2016, 6, 1, 10, 0), 1);
@@ -186,9 +202,9 @@ public class HibernateController {
     	}
     }
 	
-	public static List<Object> getData(String from, String where) {
+	public static <T> List<T> getDataList(String from, String where) {
 		Session session = null;
-		List<Object> data = new ArrayList<Object>();
+		List<T> data = new ArrayList<T>();
 		try {
 			session = sessionFactory.openSession();
 			data = session.createQuery("from " + from + 
@@ -201,6 +217,47 @@ public class HibernateController {
 			}
 		}
 		return data;
+	}
+	
+	public static <T> T getSingleElement(String from, String where) {
+	    Session session = null;
+		Object data = null;
+		try {
+			session = sessionFactory.openSession();
+			data = session.createQuery("from " + from + 
+					(where.isEmpty() ? "" : " where " + where)).uniqueResult();
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			if(session != null) {
+				session.close();
+			}
+		}
+		return (T)data;
+	}
+	
+	public static List<FlightPath> getFlightPath(Integer from, Integer to) {
+	    Session session = null;
+	    List<FlightPath> paths = new ArrayList<>();
+	    try {
+	        session = sessionFactory.openSession();
+	        Query query = session.createSQLQuery(FIND_PATH_QUERY)
+	           .addScalar("airportID", new IntegerType())
+	           .addScalar("destination", new IntegerType())
+	           .addScalar("pathString", new StringType())
+	           .setResultTransformer(Transformers.aliasToBean(FlightPath.class));
+	           query.setParameter("from", from);
+	           query.setParameter("to", to);
+
+	           paths = query.list();
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        if(session != null) {
+	            session.close();
+	        }
+	    }
+	    return paths;
 	}
 	
 }

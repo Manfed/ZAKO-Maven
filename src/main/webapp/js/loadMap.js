@@ -1,6 +1,7 @@
 var map;
-var date = new Date;
+var date = new Date();
 var autocomplete = [];
+var polylines = [];
 
 function initMap() {
     map = L.map('map').setView([33, 44], 2);
@@ -40,18 +41,95 @@ function setMarkers(positions) {
     }
 }
 
+function setPaths(paths) {
+    var div = document.getElementById('route_container');
+    var form = document.getElementById('airportForm');
+    var table_body = document.getElementById('table_body');
+    var new_tbody = document.createElement('tbody');
+    new_tbody.setAttribute('id', 'table_body');
+    var hr = document.createElement('hr');
+    for(var i = 0; i < paths.length; i++) {
+        var color = getRandomColor();
+        for(var j = 0; j < paths[i].length; j++) {
+            var flight = paths[i][j];
+            new_tbody.appendChild(createTableRow([flight.src.city + " -> " + flight.dest.city, "( " + flight.flight.flightNumber + " )"], color));
+            new_tbody.appendChild(createTableRow(["Start: " + flight.flight.date, "Length: " + flight.flight.length], color));
+            new_tbody.appendChild(createTableRow(["Price: " + flight.flight.ticketPrice, "Free seats: " + flight.flight.freeSeats, "Distance: " + flight.flight.distance], color));
+            for(var k = 0; k < flight.gate.length; k++) {
+                new_tbody.appendChild(createTableRow(["Gate: " + flight.gate[k].timeStart + " -> " + flight.gate[k].timeStop], color));
+            }
+            for(var k = 0; k < flight.ckin.length; k++) {
+                new_tbody.appendChild(createTableRow(["CKIN: " + flight.ckin[k].timeStart + " -> " + flight.ckin[k].timeStop,
+                                                        "Luggage limit: " + flight.ckin[k].luggageLimit + "kg"], color));
+            }
+            drawPolyline(L.latLng(flight.src.lat, flight.src.lon), L.latLng(flight.dest.lat, flight.dest.lon), color);
+        }
+    }
+    table_body.parentNode.replaceChild(new_tbody, table_body);
+    div.style.display = 'block';
+    form.style.display = 'none';
+}
+
+function drawPolyline(source, destination, color) {
+    var coords = [source, destination];
+    var polyline = L.polyline(coords, {color: color}).addTo(map);
+    polylines.push(polyline);
+}
+
+function clearPolylines() {
+    for(var i = 0; i < polylines.length; i++) {
+        map.removeLayer(polylines[i]);
+    }
+    polylines = [];
+}
+
 function fromButtonClick(markerTitle) {
 	var forTextBox = document.getElementById('from_textbox');
 	var toTextBox = document.getElementById('to_textbox');
-	if(forTextBox.value == "" && forTextBox.value != markerTitle) {
+	if(toTextBox.value != markerTitle) {
 		forTextBox.value = markerTitle;
 	}
+}
+
+function createTableRow(cells, color) {
+    var tr = document.createElement('tr');
+    for(var i = 0; i < cells.length; i++) {
+        var td = tr.insertCell();
+        td.appendChild(document.createTextNode(cells[i]));
+    }
+    var colorCell = tr.insertCell();
+    colorCell.setAttribute('bgcolor', color);
+    colorCell.setAttribute('width', '50px');
+    colorCell.setAttribute('')
+    return tr;
 }
 
 function toButtonClick(markerTitle) {
 	var forTextBox = document.getElementById('from_textbox');
 	var toTextBox = document.getElementById('to_textbox');
-	if(toTextBox.value == "" && forTextBox.value != markerTitle) {
+	if(forTextBox.value != markerTitle) {
 		toTextBox.value = markerTitle;
 	}
+}
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF'.split('');
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+function showForm() {
+    var forTextBox = document.getElementById('from_textbox');
+	var toTextBox = document.getElementById('to_textbox');
+    var div = document.getElementById('route_container');
+    var form = document.getElementById('airportForm');
+    
+    div.style.display = 'none';
+    form.style.display = 'block';
+    forTextBox.value = "";
+    toTextBox.value = "";
+    clearPolylines();
 }

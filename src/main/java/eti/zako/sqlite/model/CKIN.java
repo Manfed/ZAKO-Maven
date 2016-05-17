@@ -17,6 +17,9 @@ public class CKIN {
     private Date timeStop;
     private Integer luggageLimit;
     private Integer delayCode;
+    
+    public CKIN() {
+    }
 
     public CKIN(Integer ID, String flightNumber, Integer destination, Date timeStart, Date timeStop, Integer luggageLimit, Integer delayCode) {
         this.ID = ID;

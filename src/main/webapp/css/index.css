@@ -57,7 +57,24 @@ html, body, #map {
     height: auto;
     z-index: 1;
     background-color: white;
-	align-content: center;
+}
+
+#route_container
+{
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: auto;
+    height: auto;
+    z-index: 1;
+    background-color: white;
+    display: none;
+    overflow-y: scroll;
+    max-height: 80%;
+}
+
+#route_container table {
+    margin: 0 auto;
 }
 
 #form_container

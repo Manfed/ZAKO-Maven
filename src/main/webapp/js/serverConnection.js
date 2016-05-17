@@ -13,6 +13,9 @@ ws.onmessage = function (evt) {
         setAutocomplete(parsedJSON.autocomplete);
     } else if(typeof parsedJSON.markers !== "undefined") {
         setMarkers(parsedJSON.markers);
+    } else if(typeof parsedJSON.path !== "undefined") {
+        console.log(parsedJSON.path);
+        setPaths(parsedJSON.path);
     }
 };
  
@@ -37,7 +40,10 @@ function sendToServer(msg) {
 }// establish the communication channel over a websocket
 
 function submitForm() {
-	if(document.getElementById('from_textbox').value.toLowerCase() != document.getElementById('to_textbox').value.toLowerCase()) {
+    var fromTextboxValue = document.getElementById('from_textbox').value;
+    var toTextboxValue = document.getElementById('to_textbox').value;
+	if(fromTextboxValue.toLowerCase() != toTextboxValue.toLowerCase() && 
+	   autocomplete.indexOf(fromTextboxValue) != -1 && autocomplete.indexOf(toTextboxValue) != -1) {
 		var jsonToSend = "{\"form\": { \"from\": \"" + document.getElementById('from_textbox').value + "\", " +
 				"\"to\": \"" + document.getElementById('to_textbox').value + "\"\n, " +
 				"\"date\": \"" + document.getElementById('date_label_1').value + "/" + 
@@ -47,7 +53,7 @@ function submitForm() {
 				    ":" + document.getElementById('time_mins').value + "\"" +
 				"}}";
 		sendToServer(jsonToSend);
-		return true;
+		return false;
 	}
 	return false;
 }

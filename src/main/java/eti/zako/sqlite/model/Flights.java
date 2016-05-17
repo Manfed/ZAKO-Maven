@@ -18,9 +18,13 @@ public class Flights {
     private Integer freeSeats;
     private Integer ticketPrice;
     private Integer distance;
+    private Double duration;
+    
+    public Flights() {
+    }
 
 
-    public Flights(Integer ID, String flightNumber, Integer airportID, Integer destination, Date date, Integer freeSeats, Integer ticketPrice, Integer distance) {
+    public Flights(Integer ID, String flightNumber, Integer airportID, Integer destination, Date date, Integer freeSeats, Integer ticketPrice, Integer distance, Double duration) {
         this.ID = ID;
         this.flightNumber = flightNumber;
         this.airportID = airportID;
@@ -29,6 +33,7 @@ public class Flights {
         this.freeSeats = freeSeats;
         this.ticketPrice = ticketPrice;
         this.distance = distance;
+        this.duration = duration;
     }
 
 
@@ -110,5 +115,16 @@ public class Flights {
 
 	public void setDistance(Integer distance) {
 		this.distance = distance;
+	}
+	
+	public void setDuration(Double duration) {
+	    this.duration = duration;
+	}
+	
+	/**
+	 * zwraca dlugosc lotu w minutach
+	 */
+	public Double getDuration() {
+	    return this.duration;
 	}
 }

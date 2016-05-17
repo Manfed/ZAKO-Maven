@@ -3,7 +3,16 @@ package eti.zako.json;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import org.hibernate.controller.HibernateController;
+
+import com.google.gson.JsonArray;
+
+import eti.zako.sqlite.model.Airport;
+import eti.zako.sqlite.model.FlightPath;
 
 public class FormData {
     
@@ -38,6 +47,25 @@ public class FormData {
 
             return formDate;
         }
+    }
+    
+    /**
+     * Funkcja zwracająca Json'a z trasą
+     */
+    public String parseForm() {
+        String resultJson = null;
+        List<JsonArray> jsonPaths = new ArrayList<JsonArray>();
+        
+        Airport from = HibernateController.<Airport>getSingleElement("Airport", "city='" + getForm().getFrom() + "'");
+        Airport to = HibernateController.<Airport>getSingleElement("Airport", "city='" + getForm().getTo() + "'");
+        
+        List<FlightPath> paths = HibernateController.getFlightPath(from.getAirportId(), to.getAirportId());
+        for(FlightPath fPath : paths) {
+            jsonPaths.add(JSONBuilder.preparePathJson(fPath, getForm().getDate()));
+        }
+        
+        resultJson = JSONBuilder.mergePaths(jsonPaths);
+        return resultJson;
     }
 }
 
