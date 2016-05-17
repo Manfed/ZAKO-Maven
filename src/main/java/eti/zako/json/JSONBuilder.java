@@ -55,9 +55,10 @@ public class JSONBuilder {
         Airport srcAirport = null, destAirport = null;
         List<CKIN> ckins = new ArrayList<>();
         String[] airportIDs = path.getPathString().split("\\.");
+        Date currentDate = startDate;
         try {
             for(int i = 0; i < airportIDs.length - 1; i++) {
-                if(!airportIDs[i].equals("") && !airportIDs[i+1].equals("")) {
+                if(!airportIDs[i].equals("") && !airportIDs[i + 1].equals("")) {
                     JsonObject singleFlight = new JsonObject();
                     JsonObject flightData = new JsonObject();
                     JsonArray gateData = new JsonArray();
@@ -66,8 +67,10 @@ public class JSONBuilder {
                     JsonObject destAirportJson = new JsonObject();
                     flights = HibernateController.getDataList("Flights",
                         "AirportID='" + airportIDs[i] + "' and destination='" + airportIDs[i+1] + "'");
-                    Flights closestFlight = findClosestFlight(flights, startDate);
+                    Flights closestFlight = findClosestFlight(flights, currentDate);
                     Calendar calendar = GregorianCalendar.getInstance();
+                    calendar.setTime(currentDate);
+                    calendar.add(Calendar.MINUTE, flightDurationToInt(closestFlight.getDuration()));
                     calendar.setTime(closestFlight.getDate());
                     srcAirport = HibernateController.<Airport>getSingleElement("Airport", "airportId=" + closestFlight.getAirportID());
                     destAirport = HibernateController.<Airport>getSingleElement("Airport", "airportId=" + closestFlight.getDestination());
@@ -160,11 +163,16 @@ public class JSONBuilder {
 	}
 	
 	private static String parseFlightDuration(Double duration) {
-	    Integer dur = (int)Math.round(duration*60);
+	    Integer dur = flightDurationToInt(duration);
 	    String durationStr = null;
 	    int hours = dur / 60;
 	    int minutes = dur % 60;
 	    durationStr = String.format("%d:%02d", hours, minutes);
 	    return durationStr;
+	}
+	
+	private static Integer flightDurationToInt(Double duration) {
+	    Integer dur = (int)Math.round(duration*60);
+	    return dur;
 	}
 }

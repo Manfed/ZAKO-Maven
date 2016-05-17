@@ -93,14 +93,14 @@ function fromButtonClick(markerTitle) {
 
 function createTableRow(cells, color) {
     var tr = document.createElement('tr');
-    for(var i = 0; i < cells.length; i++) {
+    var len = cells.length;
+    for(var i = 0; i < len; i++) {
         var td = tr.insertCell();
         td.appendChild(document.createTextNode(cells[i]));
     }
     var colorCell = tr.insertCell();
     colorCell.setAttribute('bgcolor', color);
     colorCell.setAttribute('width', '50px');
-    colorCell.setAttribute('')
     return tr;
 }
 
