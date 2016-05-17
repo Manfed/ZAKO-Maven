@@ -63,7 +63,9 @@ function setPaths(paths) {
                                                         "Luggage limit: " + flight.ckin[k].luggageLimit + "kg"], color));
             }
             drawPolyline(L.latLng(flight.src.lat, flight.src.lon), L.latLng(flight.dest.lat, flight.dest.lon), color);
+            new_tbody.appendChild(createSeparator('transparent', '15px'));
         }
+        new_tbody.appendChild(createSeparator('black', '2px'));
     }
     table_body.parentNode.replaceChild(new_tbody, table_body);
     div.style.display = 'block';
@@ -94,13 +96,29 @@ function fromButtonClick(markerTitle) {
 function createTableRow(cells, color) {
     var tr = document.createElement('tr');
     var len = cells.length;
+    var counter = 0;
     for(var i = 0; i < len; i++) {
         var td = tr.insertCell();
         td.appendChild(document.createTextNode(cells[i]));
+        counter++;
+    }
+    for(var j = 0; j < 3 - counter; j++) {
+        var td = tr.insertCell();
+        td.setAttribute('bgcolor', 'transparent');
     }
     var colorCell = tr.insertCell();
     colorCell.setAttribute('bgcolor', color);
     colorCell.setAttribute('width', '50px');
+    return tr;
+}
+
+function createSeparator(color, height) {
+    var tr = document.createElement('tr');
+    for(var i = 0; i < 4; i++) {
+        var td = tr.insertCell();
+        td.setAttribute('bgcolor', color);
+        td.setAttribute('height', height);
+    }
     return tr;
 }
 
